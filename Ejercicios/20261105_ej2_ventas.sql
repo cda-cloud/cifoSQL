@@ -10,10 +10,11 @@ CREATE TABLE PRODUCTOS(
   stock INT,
   precio_actual DECIMAL(10,4),
   cif_nif_proveedor CHAR(12), -- ejemplo '00045671234A'
-  categoria_producto INT UNSIGNED
+  categoria_producto INT,
+  PRIMARY KEY (pk_producto)
 );
 
-ALTER TABLE PRODUCTOS ADD PRIMARY KEY (pk_producto);
+-- ALTER TABLE PRODUCTOS ADD PRIMARY KEY (pk_producto);
 
 
 -- tabla proveedores
@@ -34,10 +35,11 @@ ALTER TABLE PROVEEDORES ADD PRIMARY KEY (pk_cif_nif);
 CREATE TABLE CATEGORIAS(
   pk_categoria INT AUTO_INCREMENT,
   nombre_categoria VARCHAR(20),
-  desc_categoria VARCHAR(100)
+  desc_categoria VARCHAR(100),
+  PRIMARY KEY (pk_categoria)
 );
 
-ALTER TABLE CATEGORIAS ADD PRIMARY KEY (pk_categoria);
+-- ALTER TABLE CATEGORIAS ADD PRIMARY KEY (pk_categoria);
 
 
 -- tabla clientes
@@ -70,10 +72,11 @@ CREATE TABLE FACTURAS(
   fecha DATE NOT NULL,
   descuento DECIMAL(6,2),
   importe_final DECIMAL(10,2),
-  cif_nif_cliente CHAR(12) NOT NULL
+  cif_nif_cliente CHAR(12) NOT NULL,
+  PRIMARY KEY (pk_numero_factura)
 );
 
-ALTER TABLE FACTURAS ADD PRIMARY KEY (pk_numero_factura);
+-- ALTER TABLE FACTURAS ADD PRIMARY KEY (pk_numero_factura);
 
 
 -- tabla facturas_productos
@@ -94,6 +97,8 @@ ADD CONSTRAINT fk_cif_nif_proveedor
 FOREIGN KEY (cif_nif_proveedor) REFERENCES PROVEEDORES(pk_cif_nif)
 ON UPDATE CASCADE ON DELETE RESTRICT;
 
+-- ALTER TABLE PRODUCTOS MODIFY categoria_producto INT; -- antes tenia puesto tipo INT UNSIGNED y daba error
+
 ALTER TABLE PRODUCTOS
 ADD CONSTRAINT fk_categoria_producto
 FOREIGN KEY (categoria_producto) REFERENCES CATEGORIAS(pk_categoria)
@@ -105,7 +110,7 @@ FOREIGN KEY (cif_nif_cliente) REFERENCES CLIENTES(pk_cif_nif)
 ON UPDATE CASCADE ON DELETE RESTRICT;
 
 ALTER TABLE FACTURAS
-ADD CONSTRAINT fk_cif_nif_cliente -- duda si se puede llamar igual que la FK de otra tabla
+ADD CONSTRAINT fk_fac_cif_nif_cliente -- fk_cif_nif_cliente -- duda si se puede llamar igual que la FK de otra tabla
 FOREIGN KEY (cif_nif_cliente) REFERENCES CLIENTES(pk_cif_nif)
 ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -118,3 +123,5 @@ ALTER TABLE FACTURAS_PRODUCTOS
 ADD CONSTRAINT fk_producto
 FOREIGN KEY (producto) REFERENCES PRODUCTOS(pk_producto)
 ON UPDATE CASCADE ON DELETE RESTRICT;
+
+-- ALTER TABLE FACTURAS_PRODUCTOS DROP FOREIGN KEY fk_fac_proc_producto;
